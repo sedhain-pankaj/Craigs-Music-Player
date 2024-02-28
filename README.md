@@ -20,14 +20,15 @@ A simple web-based jukebox video player written in PHP, HTML, CSS, JS. It uses l
 
 ## Quirks
 
-- Tap to make video small doesn't work for YouTube. YouTube supports tap to play/pause.
+- In youtube.js, you will need the $YT_API_Key. Its free but needs to be created.
+- Tap to make video small doesn't work for YouTube. YouTube only supports tap to play/pause.
 - Batch script could use GUI and sound feedback on current task.
 - Zooming in too much may cause CSS to overlap.
-- Volume slider requires multi-touch display.
+- Volume slider requires multi-touch display. Use + and - button on single touch display.
 - Splitter used with single port HDMI. 1st goes to jukebox and 2nd for TV.
 - Large song's volume especially for 2000 and Karaoke may slow down load time.
 - All videos are not 16/9 aspect ratio. May result in black bar.
-- Search function requires high-speed read capacity SSD.
+- Search function requires high read capacity SSD.
 
 ## Demo
 
