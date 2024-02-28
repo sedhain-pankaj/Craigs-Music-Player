@@ -1,0 +1,6 @@
+.DS_Store
+*.log
+.idea
+*.mp4
+*.jpg
+config.js
