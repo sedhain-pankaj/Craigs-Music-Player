@@ -20,7 +20,7 @@ A simple web-based jukebox video player written in PHP, HTML, CSS, JS. It uses l
 
 ## Quirks
 
-- In youtube.js, you will need the $YT_API_Key. Its free but needs to be created.
+- In youtube.js, you will need the $YT_API_Key. It's free but needs to be created.
 - Tap to make video small doesn't work for YouTube. YouTube only supports tap to play/pause.
 - Batch script could use GUI and sound feedback on current task.
 - Zooming in too much may cause CSS to overlap.
