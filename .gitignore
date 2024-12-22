@@ -2,5 +2,6 @@
 *.log
 .idea
 *.mp4
+*.m4v
 *.jpg
 config.js
