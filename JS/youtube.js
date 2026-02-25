@@ -15,7 +15,7 @@ function search_youtube() {
 //function to load youtube video
 const load_youtube = () => {
   const search_query = $("#search_query").val();
-  const search_query_url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${search_query}&type=video&maxResults=10&key=${YT_API_Key}`;
+  const search_query_url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${search_query}&type=video&videoEmbeddable=true&maxResults=10&key=${YT_API_Key}`;
 
   $.ajax({
     url: search_query_url,
