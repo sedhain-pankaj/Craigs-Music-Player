@@ -8,7 +8,7 @@ function search_youtube() {
       "API Keys provided by Google LLC. <br>" +
       "Copyright&copy; belongs to YouTube. <br><br>" +
       "<button class='button-left' id='speedtest' onclick='internet_speed()'> Perform SpeedTest </button>" +
-      "<p id='internet_speed' style='font-size:clamp(1vw, 1.2vw, 2vw);'></p></h3>"
+      "<p id='internet_speed' style='font-size:clamp(1vw, 1.2vw, 2vw);'></p></h3>",
   );
 }
 
@@ -26,7 +26,7 @@ const load_youtube = () => {
         `<h3>
           Top 10 YouTube Results for : ' ${search_query} '
         </h3><br>
-        <div id='search_results'></div>`
+        <div id='search_results'></div>`,
       );
 
       data.items.forEach((item, i) => {
@@ -95,12 +95,12 @@ const handleSearchResultClick = function () {
       <li class='queue_name'>(YouTube) : ${$(this)
         .find(".yt_video_title")
         .text()}</li>
-    </div>`
+    </div>`,
   );
 
   $("#right-block-down").animate(
     { scrollTop: $("#right-block-down").prop("scrollHeight") },
-    500
+    500,
   );
 
   if (queue_array.length === 1 && $("video").attr("src") === "") {
@@ -109,48 +109,43 @@ const handleSearchResultClick = function () {
 };
 
 function internet_speed() {
-  //add a spinning icon to id="internet_speed"
   $("#internet_speed").html(
-    "Wait <br> <i class='material-icons' style='font-size:clamp(1vw, 4vw, 5vw);'>network_check</i>"
+    "Wait <br> <i class='material-icons' style='font-size:clamp(1vw, 4vw, 5vw);'>network_check</i>",
   );
 
-  var imageAddr = "https://hackthestuff.com/images/test.jpg";
-  var downloadSize = 13055440;
-  window.setTimeout(MeasureConnectionSpeed, 0);
+  var testUrl =
+    "https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg"; // A large image file for testing
+  var startTime = new Date().getTime();
 
-  function MeasureConnectionSpeed() {
-    var startTime, endTime;
-    var download = new Image();
-    download.onload = function () {
-      endTime = new Date().getTime();
-      showResults();
-    };
-    download.onerror = function (err) {
-      console.log(err);
-      $("#internet_speed").html("Error: " + err.statusText);
-    };
-    startTime = new Date().getTime();
-    var cacheBuster = "?nnn=" + startTime;
-    download.src = imageAddr + cacheBuster;
-    function showResults() {
+  fetch(testUrl + "?t=" + startTime, { cache: "no-store" })
+    .then(function (response) {
+      if (!response.ok) throw new Error(response.statusText);
+      return response.blob();
+    })
+    .then(function (blob) {
+      var endTime = new Date().getTime();
       var duration = (endTime - startTime) / 1000;
-      var bitsLoaded = downloadSize * 8;
-      var speedBps = (bitsLoaded / duration).toFixed(2);
-      var speedKbps = (speedBps / 1024).toFixed(2);
-      var speedMbps = (speedKbps / 1024).toFixed(2);
+      var bitsLoaded = blob.size * 8;
+      var speedMbps = (bitsLoaded / duration / 1024 / 1024).toFixed(2);
 
-      let speed = speedBps + " bps (may not be accurate)";
-      if (speedKbps > 1) {
-        speed = speedKbps + " Kbps (may not be accurate)";
-      }
-      if (speedMbps > 1) {
-        speed = speedMbps + " Mbps (may not be accurate)";
+      var icon =
+        "<i class='material-icons' style='font-size:clamp(1vw, 4vw, 5vw);'>";
+      var quality;
+
+      if (speedMbps >= 5) {
+        quality = icon + "verified</i><br>Excellent for YouTube";
+      } else if (speedMbps >= 2) {
+        quality = icon + "verified</i><br>Good for YouTube";
+      } else if (speedMbps >= 0.5) {
+        quality = icon + "warning</i><br>May buffer on YouTube";
+      } else {
+        quality = icon + "error</i><br>Too slow for YouTube";
       }
 
-      $("#internet_speed").html(
-        "<i class='material-icons' style='font-size:clamp(1vw, 4vw, 5vw);'>verified</i> <br>" +
-          speed
-      );
-    }
-  }
+      $("#internet_speed").html(quality + "<br>" + speedMbps + " Mbps");
+    })
+    .catch(function (err) {
+      console.log(err);
+      $("#internet_speed").html("Error: Could not perform speed test.");
+    });
 }
