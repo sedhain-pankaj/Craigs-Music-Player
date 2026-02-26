@@ -148,7 +148,7 @@ function mejs_media_Player(func_restarter) {
       $("#video_container").empty();
       //create a new media element in the video container
       $("#video_container").html(
-        "<video id='video' src='' autoplay preload='auto'></video>"
+        "<video id='video' src='' autoplay preload='auto'></video>",
       );
 
       //video dimensions scale to fit the container
@@ -279,10 +279,16 @@ function volume_changer() {
     }
   });
 
+  // volume before mute, used to restore on unmute
+  var preMuteVolume = 0;
+  var mutedByButton = false;
+
   // when clicked on id=mute, mute the video and change icon to volume_off
   $("#mute").click(function () {
-    var vol = $("#vol").html();
+    var vol = parseInt($("#vol").html());
     if (vol > 0) {
+      preMuteVolume = vol;
+      mutedByButton = true;
       $("#slider").slider("value", 0);
       document.getElementById("video").volume = 0;
       $("#vol").html(0);
@@ -291,10 +297,20 @@ function volume_changer() {
       $("#mute").css("color", "#7e0000");
       document.getElementById("video").muted = true;
       $("#vol").css("color", "#7e0000");
+    } else if (mutedByButton) {
+      mutedByButton = false;
+      $("#slider").slider("value", preMuteVolume);
+      document.getElementById("video").volume = preMuteVolume / 100;
+      $("#vol").html(preMuteVolume);
+      $("#slider").css("background-color", "white");
+      $("#mute").html("volume_up");
+      $("#mute").css("color", "#155d62");
+      document.getElementById("video").muted = false;
+      $("#vol").css("color", "#033e30");
     } else {
       jquery_modal({
         message:
-          "Volume is already muted. Click on the slider to unmute. Use the + and - buttons for more precision.",
+          "Volume was already muted via slider. Use the <b style='font-size:1.2rem'>+</b> or <b style='font-size:1.8rem'>-</b>  button to set the volume.",
         title: "Volume Already Muted",
       });
     }
