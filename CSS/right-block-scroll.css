@@ -106,30 +106,60 @@
 
 /* Queue Div: Name and Button */
 .queue_div {
-  margin: 1vh 1.5vw;
+  margin: 1.5vh 1.5vw;
   border-bottom: 0.2vw solid rgb(67, 52, 52);
+}
+.queue_top {
+  display: flex;
+  align-items: center;
+  gap: 2%;
+}
+.queue_top img {
+  flex-shrink: 0;
+}
+.queue_buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vh;
+  margin-left: auto;
+}
+.queue_bottom {
+  margin: 1.5vh 0 0.5vh 0
+}
+.queue_number {
+  font-size: clamp(0.5vw, 1vw, 5vw);
+  font-weight: bolder;
+  color: #500059;
+  margin-right: 0.3vw;
 }
 .queue_name {
   font-size: clamp(0.5vw, 1vw, 5vw);
   font-weight: bold;
   color: #500059;
-  margin-bottom: 1%;
 }
 .queue_remove_button {
-  float: right;
-  margin: 3%;
-  width: 45%;
-  height: 35%;
   border-radius: 1vw;
   border: 0.1vw solid #a1a1a1;
   color: #ff0000;
-  font-size: clamp(1vw, 1.8vw, 2vw);
+  font-size: clamp(1vw, 1.2vw, 2vw);
   text-align: center;
   cursor: pointer;
   font-weight: bold;
+  white-space: nowrap;
 }
-#backspace{
-  font-size:clamp(1vw, 1.2vw, 2vw)
+.queue_movetop_button {
+  border-radius: 1vw;
+  border: 0.1vw solid #a1a1a1;
+  color: #015433;
+  font-size: clamp(1vw, 1.2vw, 2vw);
+  text-align: center;
+  cursor: pointer;
+  font-weight: bold;
+  white-space: nowrap;
+}
+#backspace,
+#move_to_top {
+  font-size: clamp(1vw, 1.1vw, 2vw);
 }
 
 /* scrollbar button - seperate for queue */
