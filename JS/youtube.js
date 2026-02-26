@@ -69,9 +69,10 @@ const handleSearchResultClick = function () {
     .text()}`;
 
   if (queue_array.includes(yt_dir)) {
+    var position = queue_array.indexOf(yt_dir) + 1;
     jquery_modal({
       message:
-        "This song exists already in queue. Once it is played from the queue, it can be added again.",
+        "This song is already queued at number " + position + ". Once it is played from the queue, it can be added again.",
       title: "Song Already Queued",
     });
     return;
