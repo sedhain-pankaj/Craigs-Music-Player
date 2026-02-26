@@ -113,11 +113,28 @@ function renumber_Queue() {
 // move song to front of queue
 function queue_move_to_top(element, dir) {
   var queue_array_index = queue_array.indexOf(dir);
-  if (queue_array_index === 0) return;
-  queue_array.splice(queue_array_index, 1);
-  queue_array.unshift(dir);
-  var queueDiv = $(element).closest(".queue_div");
-  queueDiv.prependTo("#right-block-down");
-  renumber_Queue();
-  $("#right-block-down").animate({ scrollTop: 0 }, 500);
+
+  if (queue_array_index === 0) {
+    jquery_modal({
+      message: "This song is already at the top of the queue.",
+      title: "Already at Top",
+    });
+    return;
+  }
+
+  jquery_modal({
+    message: "This moves the selected song to the top of the queue. Do you want to proceed?",
+    title: "Move Song to Top",
+    dialogClass: "show-closer",
+    closeTime: 30000,
+    buttonText: "Move to Top",
+    buttonAction: function () {
+      queue_array.splice(queue_array_index, 1);
+      queue_array.unshift(dir);
+      var queueDiv = $(element).closest(".queue_div");
+      queueDiv.prependTo("#right-block-down");
+      renumber_Queue();
+      $("#right-block-down").animate({ scrollTop: 0 }, 500);
+    },
+  });
 }
