@@ -12,7 +12,8 @@ function queue_array_remove(element, dir) {
     buttonAction: function () {
       var queue_array_index = queue_array.indexOf(dir);
       queue_array.splice(queue_array_index, 1);
-      $(element).parent().remove();
+      $(element).closest(".queue_div").remove();
+      renumber_Queue();
     },
   });
 }
@@ -48,7 +49,7 @@ function clearQueueAction() {
   var password = $("#clear_queue_input").val();
 
   // Guard clause: if password is incorrect, display message and return
-  if (password !== "craig") {
+  if (password !== queue_clear_password) {
     $("#clear_queue_input").css("background-color", "red");
     $("#clear_queue_input").effect("shake", {
       direction: "left",
@@ -61,7 +62,7 @@ function clearQueueAction() {
     $("#clear_queue_input").val("");
     $("#clear_queue_input").attr(
       "placeholder",
-      "Wrong Password Entered. Click to try again."
+      "Wrong Password Entered. Click to try again.",
     );
     return;
   }

@@ -27,21 +27,25 @@ function queue_array_create(filename, img, dir) {
   queue_array.push(dir);
   $("#right-block-down").append(
     "<div class='queue_div'>" +
-      "<button class='queue_remove_button' onclick='queue_array_remove(this, \"" +
-      dir +
-      "\")'>Remove <i class='material-icons' id='backspace'>backspace</i></button>" +
-      "<img src='" +
-      img +
-      "'>" +
-      "<li class='queue_name'>" +
-      filename +
-      "</li></div>"
+      "<div class='queue_top'>" +
+        "<img src='" + img + "'>" +
+        "<div class='queue_buttons'>" +
+          "<button class='queue_remove_button' onclick='queue_array_remove(this, \"" + dir + "\")'>Remove <i class='material-icons' id='backspace'>backspace</i></button>" +
+          "<button class='queue_movetop_button' onclick='queue_move_to_top(this, \"" + dir + "\")'>Move to Top <i class='material-icons' id='move_to_top'>vertical_align_top</i></button>" +
+        "</div>" +
+      "</div>" +
+      "<div class='queue_bottom'>" +
+        "<span class='queue_number'></span>" +
+        "<span class='queue_name'>" + filename + "</span>" +
+      "</div>" +
+    "</div>",
   );
+  renumber_Queue();
 
   //scroll to bottom of queue when a song is added
   $("#right-block-down").animate(
     { scrollTop: $("#right-block-down").prop("scrollHeight") },
-    500
+    500,
   );
 
   //run play_Queue function when first song is added i.e.autoplay
@@ -59,7 +63,7 @@ function play_Queue() {
     $("#video_container").empty();
     //create a new media element in the video container
     $("#video_container").html(
-      "<video id='video' src='' autoplay preload='auto'></video>"
+      "<video id='video' src='' autoplay preload='auto'></video>",
     );
 
     //video dimensions scale to fit the container
@@ -86,7 +90,7 @@ function play_Queue() {
   //use text of class queue_name of first child of right block down
   video_title.innerHTML = $("#right-block-down")
     .children(":first")
-    .children(".queue_name")
+    .find(".queue_name")
     .text();
 
   //remove first element/song from queue_array
@@ -96,4 +100,24 @@ function play_Queue() {
   //remove the first queue_div from the right-block-down.
   var firstQueueItem = $(".queue_div").first();
   firstQueueItem.remove();
+  renumber_Queue();
+}
+
+//renumber all queue items after any change
+function renumber_Queue() {
+  $(".queue_number").each(function (i) {
+    $(this).text(i + 1 + ".");
+  });
+}
+
+// move song to front of queue
+function queue_move_to_top(element, dir) {
+  var queue_array_index = queue_array.indexOf(dir);
+  if (queue_array_index === 0) return;
+  queue_array.splice(queue_array_index, 1);
+  queue_array.unshift(dir);
+  var queueDiv = $(element).closest(".queue_div");
+  queueDiv.prependTo("#right-block-down");
+  renumber_Queue();
+  $("#right-block-down").animate({ scrollTop: 0 }, 500);
 }

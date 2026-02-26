@@ -90,13 +90,20 @@ const handleSearchResultClick = function () {
 
   $("#right-block-down").append(
     `<div class='queue_div'>
-      <button class='queue_remove_button' onclick='queue_array_remove(this, "${yt_dir}")'>Remove <i class='material-icons' id='backspace'>backspace</i></button>
-      <img src='${$(this).find(".search_result_img img").attr("src")}'>
-      <li class='queue_name'>(YouTube) : ${$(this)
-        .find(".yt_video_title")
-        .text()}</li>
+      <div class='queue_top'>
+        <img src='${$(this).find(".search_result_img img").attr("src")}'>
+        <div class='queue_buttons'>
+          <button class='queue_remove_button' onclick='queue_array_remove(this, "${yt_dir}")'>Remove <i class='material-icons' id='backspace'>backspace</i></button>
+          <button class='queue_movetop_button' onclick='queue_move_to_top(this, "${yt_dir}")'>Move to Top <i class='material-icons' id='move_to_top'>vertical_align_top</i></button>
+        </div>
+      </div>
+      <div class='queue_bottom'>
+        <span class='queue_number'></span>
+        <span class='queue_name'>(YouTube) : ${$(this).find(".yt_video_title").text()}</span>
+      </div>
     </div>`,
   );
+  renumber_Queue();
 
   $("#right-block-down").animate(
     { scrollTop: $("#right-block-down").prop("scrollHeight") },
