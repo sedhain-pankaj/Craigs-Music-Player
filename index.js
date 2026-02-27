@@ -127,7 +127,7 @@ function mejs_media_Player(func_restarter) {
       checkActivity2();
 
       //if player is fullscreen, exit fullscreen if user clicks on the video
-      $("video").click(function () {
+      document.getElementsByClassName("mejs__mediaelement")[0].addEventListener("click", function () {
         if (player.isFullScreen) {
           player.exitFullScreen();
           $("video").attr("width", $("video").width());
