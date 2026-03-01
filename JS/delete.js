@@ -70,6 +70,7 @@ function clearQueueAction() {
   // if it passes the guard clause, clear the old modal and its timer
   clearInterval(countdownInterval);
   $("#dialog-confirm").dialog("close");
+  document.activeElement.blur();
 
   // splices the queue_array and refreshes #right-block-down div
   $("#right-block-down").html("");
@@ -85,3 +86,12 @@ function clearQueueAction() {
     });
   }, 500);
 }
+
+// Enter key triggers clear queue action (works with both physical and virtual keyboard)
+$(document).on("keydown", "#clear_queue_input", function (e) {
+  if (e.key === "Enter" && document.activeElement === this && $(this).val() !== "") {
+    e.preventDefault();
+    if (displayKeyboard) Keyboard.close();
+    clearQueueAction();
+  }
+});
