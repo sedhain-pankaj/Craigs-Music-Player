@@ -5,9 +5,9 @@ A simple web-based jukebox video player written in PHP, HTML, CSS, JS. It uses l
 ## Features
 
 - The admin folder contains batch files that can be used to update the jukebox (Windows only). It is split into 3 parts:
-    - Files needed by the pendrive used for update.
-    - The autorun setup needed in the jukebox.
-    - The files for the computer used to generate thumbnails and prepare the USB-stick needed for update.
+  - Files needed by the pendrive used for update.
+  - The autorun setup needed in the jukebox.
+  - The files for the computer used to generate thumbnails and prepare the USB-stick needed for update.
 
 ## Usage
 
@@ -21,7 +21,6 @@ A simple web-based jukebox video player written in PHP, HTML, CSS, JS. It uses l
 ## Quirks
 
 - In youtube.js, you will need the $YT_API_Key. It's free but needs to be created.
-- Tap to make video small doesn't work for YouTube. YouTube only supports tap to play/pause.
 - Batch script could use GUI and sound feedback on current task.
 - Zooming in too much may cause CSS to overlap.
 - Volume slider requires multi-touch display. Use + and - button on single touch display.
