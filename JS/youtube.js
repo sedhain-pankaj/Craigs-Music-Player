@@ -10,6 +10,15 @@ function search_youtube() {
       "<button class='button-left' id='speedtest' onclick='internet_speed()'> Perform SpeedTest </button>" +
       "<p id='internet_speed' style='font-size:clamp(1vw, 1.2vw, 2vw);'></p></h3>",
   );
+
+  // Physical Enter key triggers YouTube search
+  $("#search_query").on("keydown", function (e) {
+    if (e.key === "Enter" && $(this).val() !== "") {
+      e.preventDefault();
+      load_youtube();
+      Keyboard.close();
+    }
+  });
 }
 
 //function to load youtube video
@@ -72,7 +81,9 @@ const handleSearchResultClick = function () {
     var position = queue_array.indexOf(yt_dir) + 1;
     jquery_modal({
       message:
-        "This song is already queued at number " + position + ". Once it is played from the queue, it can be added again.",
+        "This song is already queued at number " +
+        position +
+        ". Once it is played from the queue, it can be added again.",
       title: "Song Already Queued",
     });
     return;

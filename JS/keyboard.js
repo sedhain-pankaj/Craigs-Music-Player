@@ -5,6 +5,7 @@ const Keyboard = {
     main: null,
     keysContainer: null,
     keys: [],
+    activeInput: null,
   },
 
   eventHandlers: {
@@ -19,6 +20,9 @@ const Keyboard = {
     pause: false,
     pauseTimeout: null,
   },
+
+  // Handler to sync properties.value when physical keyboard is used
+  _physicalInputHandler: null,
 
   init() {
     // Create main elements
@@ -37,13 +41,26 @@ const Keyboard = {
     this.elements.main.appendChild(this.elements.keysContainer);
     document.body.appendChild(this.elements.main);
 
+    // Bind the physical input handler once
+    this._physicalInputHandler = () => {
+      if (this.elements.activeInput) {
+        this.properties.value = this.elements.activeInput.value;
+        this._triggerEvent("oninput");
+      }
+    };
+
     // Add event listeners for inputs added later
     document.addEventListener("click", (event) => {
       if (event.target.tagName === "INPUT") {
-        this.open(event.target.value, (currentValue) => {
-          event.target.value = currentValue;
-          event.target.dispatchEvent(new Event("click"));
-        });
+        this.open(
+          event.target.value,
+          (currentValue) => {
+            event.target.value = currentValue;
+            event.target.dispatchEvent(new Event("click"));
+          },
+          null,
+          event.target,
+        );
       }
     });
   },
@@ -117,7 +134,7 @@ const Keyboard = {
           keyElement.addEventListener("click", () => {
             this.properties.value = this.properties.value.substring(
               0,
-              this.properties.value.length - 1
+              this.properties.value.length - 1,
             );
             this._triggerEvent("oninput");
           });
@@ -127,7 +144,7 @@ const Keyboard = {
         case "caps":
           keyElement.classList.add(
             "keyboard__key--wide",
-            "keyboard__key--activatable"
+            "keyboard__key--activatable",
           );
           keyElement.innerHTML = createIconHTML("keyboard_capslock");
 
@@ -135,7 +152,7 @@ const Keyboard = {
             this._toggleCapsLock();
             keyElement.classList.toggle(
               "keyboard__key--active",
-              this.properties.capsLock
+              this.properties.capsLock,
             );
           });
 
@@ -144,7 +161,7 @@ const Keyboard = {
         case "Enter":
           keyElement.classList.add(
             "keyboard__key--wide",
-            "keyboard__key--dark"
+            "keyboard__key--dark",
           );
           keyElement.innerHTML =
             "Enter " + "&nbsp" + createIconHTML("keyboard_return");
@@ -240,11 +257,26 @@ const Keyboard = {
     }
   },
 
-  open(initialValue, oninput, onclose) {
+  open(initialValue, oninput, onclose, inputElement) {
     this.properties.value = initialValue || "";
     this.eventHandlers.oninput = oninput;
     this.eventHandlers.onclose = onclose;
     this.elements.main.classList.remove("keyboard--hidden");
+
+    // Track active input and listen for physical keyboard input
+    if (this.elements.activeInput) {
+      this.elements.activeInput.removeEventListener(
+        "input",
+        this._physicalInputHandler,
+      );
+    }
+    this.elements.activeInput = inputElement || null;
+    if (this.elements.activeInput) {
+      this.elements.activeInput.addEventListener(
+        "input",
+        this._physicalInputHandler,
+      );
+    }
 
     //sets the timer to close and shows it on space-key
     clearInterval(this.interval);
@@ -271,6 +303,15 @@ const Keyboard = {
     this.eventHandlers.oninput = oninput;
     this.eventHandlers.onclose = onclose;
     this.elements.main.classList.add("keyboard--hidden");
+
+    // Remove physical keyboard listener from active input
+    if (this.elements.activeInput) {
+      this.elements.activeInput.removeEventListener(
+        "input",
+        this._physicalInputHandler,
+      );
+      this.elements.activeInput = null;
+    }
 
     //reset the timer and sets it to its original value
     clearInterval(this.interval);
