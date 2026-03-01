@@ -1,16 +1,36 @@
 //ajax to get the search results for all and karaoke
+const searchDelay = 1000; // ms delay to let user finish typing
+
 $(function () {
+  var searchAllTimer = null;
+  var searchKaraokeTimer = null;
+
   //Ajax to get the search_all results
   $("#search_all").click(function () {
     performSearch("search_all", "Karaoke", "All Songs (except Karaoke)");
+  });
+
+  // Debounced physical keyboard input for search_all
+  $("#search_all").on("input", function () {
+    clearTimeout(searchAllTimer);
+    searchAllTimer = setTimeout(function () {
+      performSearch("search_all", "Karaoke", "All Songs (except Karaoke)");
+    }, searchDelay);
   });
 
   //Ajax to get the search_karaoke results
   $("#search_karaoke").click(function () {
     performSearch("search_karaoke", null, "Only Karaoke", "Karaoke");
   });
-});
 
+  // Debounced physical keyboard input for search_karaoke
+  $("#search_karaoke").on("input", function () {
+    clearTimeout(searchKaraokeTimer);
+    searchKaraokeTimer = setTimeout(function () {
+      performSearch("search_karaoke", null, "Only Karaoke", "Karaoke");
+    }, searchDelay);
+  });
+});
 
 function performSearch(searchId, excludeKey, searchMsg, searchKey = null) {
   var searchValue = $(`#${searchId}`).val();
@@ -19,7 +39,7 @@ function performSearch(searchId, excludeKey, searchMsg, searchKey = null) {
   if (searchValue == "") {
     $("#div_img_video_loader").html(
       `<h3>Search activated for ${searchMsg}.<br>` +
-        "Fullscreen halts if Keyboard is active.</h3>"
+        "Fullscreen halts if Keyboard is active.</h3>",
     );
     return; // Exit function early
   }
@@ -44,7 +64,7 @@ function performSearch(searchId, excludeKey, searchMsg, searchKey = null) {
         var regex = new RegExp(searchValue, "gi");
         var highlightedText = lastCellText.replace(
           regex,
-          (match) => `<span style="background-color: #ffff99;">${match}</span>`
+          (match) => `<span style="background-color: #ffff99;">${match}</span>`,
         );
         row.querySelector("td:last-child").innerHTML = highlightedText;
         filteredResults.push({
@@ -61,7 +81,7 @@ function performSearch(searchId, excludeKey, searchMsg, searchKey = null) {
         "'" +
         searchValue +
         "'. <br><br>" +
-        "Try YouTube Search.</h3>"
+        "Try YouTube Search.</h3>",
     );
     return; // Exit function early
   }
@@ -69,7 +89,7 @@ function performSearch(searchId, excludeKey, searchMsg, searchKey = null) {
   // Display the filtered results
   $("#div_img_video_loader").html(
     `<h3> ${searchMsg} Results for : ' ${searchValue} '</h3><br>` +
-      `<div id='${searchId}_results'></div>`
+      `<div id='${searchId}_results'></div>`,
   );
 
   filteredResults.forEach(function (result) {
