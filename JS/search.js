@@ -5,26 +5,16 @@ $(function () {
   var searchAllTimer = null;
   var searchKaraokeTimer = null;
 
-  //Ajax to get the search_all results
-  $("#search_all").click(function () {
-    performSearch("search_all", "Karaoke", "All Songs (except Karaoke)");
-  });
-
-  // Debounced physical keyboard input for search_all
-  $("#search_all").on("input", function () {
+  //Ajax to get the search_all results (debounced for both virtual and physical keyboard)
+  $("#search_all").on("click input", function () {
     clearTimeout(searchAllTimer);
     searchAllTimer = setTimeout(function () {
       performSearch("search_all", "Karaoke", "All Songs (except Karaoke)");
     }, searchDelay);
   });
 
-  //Ajax to get the search_karaoke results
-  $("#search_karaoke").click(function () {
-    performSearch("search_karaoke", null, "Only Karaoke", "Karaoke");
-  });
-
-  // Debounced physical keyboard input for search_karaoke
-  $("#search_karaoke").on("input", function () {
+  //Ajax to get the search_karaoke results (debounced for both virtual and physical keyboard)
+  $("#search_karaoke").on("click input", function () {
     clearTimeout(searchKaraokeTimer);
     searchKaraokeTimer = setTimeout(function () {
       performSearch("search_karaoke", null, "Only Karaoke", "Karaoke");
