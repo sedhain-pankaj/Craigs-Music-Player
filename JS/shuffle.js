@@ -34,9 +34,12 @@ function shuffleAjaxCall(key, index) {
     success: function (response) {
       shuffleArrays[key] = response.split("<br>");
       shuffleArrays[key].pop();
-      shuffleArrays[key].sort(function () {
-        return 0.5 - Math.random();
-      });
+      for (var i = shuffleArrays[key].length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = shuffleArrays[key][i];
+        shuffleArrays[key][i] = shuffleArrays[key][j];
+        shuffleArrays[key][j] = temp;
+      }
       show_shuffle_msg(shuffleArrays[key], dir_msg_collection[index]);
     },
   });
@@ -58,7 +61,7 @@ function shuffler(array, dir_msg) {
     $("#video_container").empty();
     // Create a new media element in the video container
     $("#video_container").html(
-      "<video id='video' src='' autoplay preload='auto'></video>"
+      "<video id='video' src='' autoplay preload='auto'></video>",
     );
     // Video dimensions scale to fit the container
     video_scaler();
@@ -81,14 +84,14 @@ function shuffler(array, dir_msg) {
   closeNav();
   if (
     !dir_msg_collection.some((item) =>
-      $("#video_title").text().includes(item)
+      $("#video_title").text().includes(item),
     ) &&
     !$("#video_title").text().includes("Video Title")
   ) {
     $("#video_container").empty();
     //create a new media element in the video container
     $("#video_container").html(
-      "<video id='video' src='' autoplay preload='auto'></video>"
+      "<video id='video' src='' autoplay preload='auto'></video>",
     );
     //video dimensions scale to fit the container
     video_scaler();
@@ -147,7 +150,7 @@ function show_shuffle_msg(array, dir_msg) {
       buttonAction: function () {
         $("#video_container").empty();
         $("#video_container").html(
-          "<video id='video' src='' autoplay preload='auto'></video>"
+          "<video id='video' src='' autoplay preload='auto'></video>",
         );
         video_scaler();
         shuffler(array, dir_msg);
