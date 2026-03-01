@@ -1,3 +1,4 @@
+const displayKeyboard = true; // Set to false to disable the on-screen keyboard
 const timeBeforeClose = 60;
 
 const Keyboard = {
@@ -329,6 +330,8 @@ const Keyboard = {
 
 //keyboard.init when the page loads
 $(document).ready(function () {
+  if (!displayKeyboard) return;
+
   Keyboard.init();
 
   //close keyboard when clicked outside of it (except the input)

@@ -110,8 +110,8 @@ function mejs_media_Player(func_restarter) {
             !player.paused &&
             !player.error &&
             player.readyState == 4 &&
-            //if a class called keyboard--hidden is present
-            $(".keyboard--hidden").length
+            //if keyboard is disabled or hidden
+            (!displayKeyboard || $(".keyboard--hidden").length)
           ) {
             player.enterFullScreen();
             $("video").attr("width", $("video").width());
