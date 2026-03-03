@@ -59,9 +59,16 @@ function img_gen($dir, $ffmpeg)
 
 /* generate img */
 $dirs = [
-    $dir_5060, $dir_70, $dir_80, $dir_90, $dir_2000,
-    $dir_LatestHits, $dir_Country, $dir_Karaoke,
-    $dir_SpecialOccasion, $dir_ChristmasSong
+    $dir_5060,
+    $dir_70,
+    $dir_80,
+    $dir_90,
+    $dir_2000,
+    $dir_LatestHits,
+    $dir_Country,
+    $dir_Karaoke,
+    $dir_SpecialOccasion,
+    $dir_ChristmasSong
 ];
 
 foreach ($dirs as $dir) {
@@ -70,4 +77,3 @@ foreach ($dirs as $dir) {
 
 //First install php, composer and php/ffmpeg.
 //Then run this file into terminal as 'php img.php'.
-?>

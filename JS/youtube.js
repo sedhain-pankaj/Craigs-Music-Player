@@ -32,7 +32,7 @@ const load_youtube = () => {
     dataType: "json",
     success: (data) => {
       // Build all results as a single string, then insert once
-      var resultsHtml = '';
+      var resultsHtml = "";
       data.items.forEach((item, i) => {
         resultsHtml += `
           <table class='search_result_table'>

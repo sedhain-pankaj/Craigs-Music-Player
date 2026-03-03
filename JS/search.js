@@ -54,19 +54,25 @@ function performSearch(searchId, excludeKey, searchMsg, searchKey = null) {
 
       var lastTd = tdMatches[tdMatches.length - 1];
       // Strip tags to get text content
-      var textContent = lastTd.replace(/<[^>]+>/g, '');
+      var textContent = lastTd.replace(/<[^>]+>/g, "");
 
       if (textContent.toLowerCase().includes(searchLower)) {
-        var regex = new RegExp("(" + searchValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ")", "gi");
+        var regex = new RegExp(
+          "(" + searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")",
+          "gi",
+        );
         var highlightedText = textContent.replace(
           regex,
           '<span style="background-color: #ffff99;">$1</span>',
         );
         // Replace the last td content in the table HTML
         var lastTdIndex = tableHtml.lastIndexOf(lastTd);
-        var updatedTable = tableHtml.substring(0, lastTdIndex)
-          + '<td>' + highlightedText + '</td>'
-          + tableHtml.substring(lastTdIndex + lastTd.length);
+        var updatedTable =
+          tableHtml.substring(0, lastTdIndex) +
+          "<td>" +
+          highlightedText +
+          "</td>" +
+          tableHtml.substring(lastTdIndex + lastTd.length);
         filteredResults.push(updatedTable);
       }
     }
@@ -85,7 +91,7 @@ function performSearch(searchId, excludeKey, searchMsg, searchKey = null) {
   }
 
   // Build all results as a single string, then insert once
-  var resultsHtml = filteredResults.join('');
+  var resultsHtml = filteredResults.join("");
 
   $("#div_img_video_loader").html(
     `<h3> ${searchMsg} Results for : ' ${searchValue} '</h3><br>` +

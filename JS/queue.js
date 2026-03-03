@@ -8,7 +8,9 @@ function queue_array_create(filename, img, dir) {
     var position = queue_array.indexOf(dir) + 1;
     jquery_modal({
       message:
-        "This song is already queued at number " + position + ". Once it is played from the queue, it can be added again.",
+        "This song is already queued at number " +
+        position +
+        ". Once it is played from the queue, it can be added again.",
       title: "Song Already Queued",
     });
     return;
@@ -31,15 +33,25 @@ function queue_array_create(filename, img, dir) {
   queueDiv.className = "queue_div";
   queueDiv.innerHTML =
     "<div class='queue_top'>" +
-      "<img src='" + img + "'>" +
-      "<div class='queue_buttons'>" +
-        "<button class='queue_remove_button' onclick='queue_array_remove(this, \"" + dir + "\")'>Remove <i class='material-icons' id='backspace'>backspace</i></button>" +
-        "<button class='queue_movetop_button' onclick='queue_move_to_top(this, \"" + dir + "\")'>Move to Top <i class='material-icons' id='move_to_top'>vertical_align_top</i></button>" +
-      "</div>" +
+    "<img src='" +
+    img +
+    "'>" +
+    "<div class='queue_buttons'>" +
+    "<button class='queue_remove_button' onclick='queue_array_remove(this, \"" +
+    dir +
+    "\")'>Remove <i class='material-icons' id='backspace'>backspace</i></button>" +
+    "<button class='queue_movetop_button' onclick='queue_move_to_top(this, \"" +
+    dir +
+    "\")'>Move to Top <i class='material-icons' id='move_to_top'>vertical_align_top</i></button>" +
+    "</div>" +
     "</div>" +
     "<div class='queue_bottom'>" +
-      "<span class='queue_number'>" + queueNumber + ".</span>" +
-      "<span class='queue_name'>" + filename + "</span>" +
+    "<span class='queue_number'>" +
+    queueNumber +
+    ".</span>" +
+    "<span class='queue_name'>" +
+    filename +
+    "</span>" +
     "</div>";
   document.getElementById("right-block-down").appendChild(queueDiv);
 
@@ -124,7 +136,8 @@ function queue_move_to_top(element, dir) {
   }
 
   jquery_modal({
-    message: "This moves the selected song to the top of the queue. Do you want to proceed?",
+    message:
+      "This moves the selected song to the top of the queue. Do you want to proceed?",
     title: "Move Song to Top",
     dialogClass: "show-closer",
     closeTime: 30000,

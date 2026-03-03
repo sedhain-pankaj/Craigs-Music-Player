@@ -39,7 +39,9 @@ const Keyboard = {
       this.elements.keysContainer.querySelectorAll(".keyboard__key");
 
     // Cache the space key element for the timer updates
-    this.elements.spaceKey = this.elements.keysContainer.querySelector(".keyboard__key--extra-wide");
+    this.elements.spaceKey = this.elements.keysContainer.querySelector(
+      ".keyboard__key--extra-wide",
+    );
 
     // Add to DOM
     this.elements.main.appendChild(this.elements.keysContainer);

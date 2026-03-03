@@ -39,8 +39,10 @@ function get_video_files($dir)
     $files = scandir($dir);
     $filtered_files = [];
     foreach ($files as $filename) {
-        if ($filename !== '.' && $filename !== '..' && $filename !== '.DS_Store'
-            && preg_match(VIDEO_PATTERN, $filename)) {
+        if (
+            $filename !== '.' && $filename !== '..' && $filename !== '.DS_Store'
+            && preg_match(VIDEO_PATTERN, $filename)
+        ) {
             $filtered_files[] = $filename;
         }
     }
