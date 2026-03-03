@@ -22,11 +22,12 @@ $(document).click(function (e) {
 
 //function to scale down video to fit within video_container and pointer events to auto
 function video_scaler() {
-  $("video").css("width", $("#video_container").width());
-  $("video").css("height", $("#video_container").height());
-  $("video").css("pointer-events", "auto");
-  $("video").attr("width", $("video").width());
-  $("video").attr("height", $("video").height());
+  var $video = $("video");
+  var $container = $("#video_container");
+  var w = $container.width();
+  var h = $container.height();
+  $video.css({ width: w, height: h, "pointer-events": "auto" })
+        .attr({ width: w, height: h });
 
   //non-jQuery to apply for event generated video == $0
   document.getElementById("video").volume = $("#vol").html() / 100;
@@ -59,7 +60,7 @@ function searchCondition() {
 //run the 80s shuffle function if no songs are playing
 function autoShuffle() {
   var timeout = false;
-  function checkActivity() {
+  function onActivity() {
     clearTimeout(timeout);
     timeout = setTimeout(function () {
       if ($("video").attr("src") == "" && queue_array.length == 0) {
@@ -68,10 +69,11 @@ function autoShuffle() {
     }, 1);
   }
 
-  document.addEventListener("mousedown", checkActivity);
-  document.addEventListener("mousemove", checkActivity);
-  document.addEventListener("click", checkActivity);
-  checkActivity();
+  // Single set of listeners for auto-shuffle activity detection
+  ["mousedown", "mousemove", "click"].forEach(function (evt) {
+    document.addEventListener(evt, onActivity);
+  });
+  onActivity();
 }
 
 //mejs player
@@ -116,14 +118,13 @@ function mejs_media_Player(func_restarter) {
             player.enterFullScreen();
             $("video").attr("width", $("video").width());
             $("video").attr("height", $("video").height());
-            //console.log("video resized");
           }
         }, 7000);
       }
 
-      document.addEventListener("mousedown", checkActivity2);
-      document.addEventListener("mousemove", checkActivity2);
-      document.addEventListener("click", checkActivity2);
+      ["mousedown", "mousemove", "click"].forEach(function (evt) {
+        document.addEventListener(evt, checkActivity2);
+      });
       checkActivity2();
 
       //if player is fullscreen, exit fullscreen if user clicks on the video
@@ -179,48 +180,59 @@ function mejs_media_Player(func_restarter) {
   });
 }
 
-//function to move queue scrollbar to the top of the queue after 5 seconds of inactivity
+//function to move queue scrollbar to the top of the queue after 10 seconds of inactivity
 function queue_scroll_top() {
   var timeout3 = false;
-  function checkActivity3() {
+  function onActivity() {
     clearTimeout(timeout3);
     timeout3 = setTimeout(function () {
       $("#right-block-down").animate({ scrollTop: 0 }, 500);
     }, 10000);
   }
 
-  document.addEventListener("mousedown", checkActivity3);
-  document.addEventListener("mousemove", checkActivity3);
-  document.addEventListener("click", checkActivity3);
-  checkActivity3();
+  ["mousedown", "mousemove", "click"].forEach(function (evt) {
+    document.addEventListener(evt, onActivity);
+  });
+  onActivity();
 }
 
 // create a jqueryUI slider to control volume for whole system
+// Cached volume DOM elements to avoid repeated lookups
+var $volEl, $sliderEl, $muteEl, videoEl;
+
+function _cacheVolumeElements() {
+  $volEl = $("#vol");
+  $sliderEl = $("#slider");
+  $muteEl = $("#mute");
+  videoEl = document.getElementById("video");
+}
+
+function _applyVolumeStyle(vol) {
+  if (vol == 0) {
+    videoEl.muted = true;
+    $muteEl.html("volume_off").css("color", "#7e0000");
+    $sliderEl.css("background-color", "#7e0000");
+    $volEl.css("color", "#7e0000");
+  } else {
+    videoEl.muted = false;
+    $muteEl.html("volume_up").css("color", "#155d62");
+    $sliderEl.css("background-color", "white");
+    $volEl.css("color", "#033e30");
+  }
+}
+
 function volume_slider() {
-  $("#slider").slider({
+  _cacheVolumeElements();
+  $sliderEl.slider({
     animate: "fast",
     value: 50,
     min: 0,
     max: 100,
     step: 1,
     slide: function (event, ui) {
-      $("#vol").html(ui.value);
-      document.getElementById("video").volume = ui.value / 100;
-
-      //set color of slider to match volume
-      if (ui.value == 0) {
-        document.getElementById("video").muted = true;
-        $("#mute").html("volume_off");
-        $("#mute").css("color", "#7e0000");
-        $("#slider").css("background-color", "#7e0000");
-        $("#vol").css("color", "#7e0000");
-      } else {
-        document.getElementById("video").muted = false;
-        $("#mute").html("volume_up");
-        $("#mute").css("color", "#155d62");
-        $("#slider").css("background-color", "white");
-        $("#vol").css("color", "#033e30");
-      }
+      $volEl.html(ui.value);
+      videoEl.volume = ui.value / 100;
+      _applyVolumeStyle(ui.value);
     },
   });
 }
@@ -228,55 +240,26 @@ function volume_slider() {
 function volume_changer() {
   // when clicked on id=vol_down, decrease slider value by 1 and set volume to that value
   $("#vol_down").click(function () {
-    var vol = $("#vol").html();
+    var vol = parseInt($volEl.html());
     if (vol > 0) {
       vol--;
-      $("#slider").slider("value", vol);
-      document.getElementById("video").volume = vol / 100;
-      $("#vol").html(vol);
-
-      //make slider color #7e0000 if vol is 0 otherwise make it white
-      if (vol == 0) {
-        $("#slider").css("background-color", "#7e0000");
-        $("#mute").html("volume_off");
-        $("#mute").css("color", "#7e0000");
-        document.getElementById("video").muted = true;
-        $("#vol").css("color", "#7e0000");
-      } else {
-        $("#slider").css("background-color", "white");
-        $("#mute").html("volume_up");
-        $("#mute").css("color", "#155d62");
-        document.getElementById("video").muted = false;
-        $("#vol").css("color", "#033e30");
-      }
+      $sliderEl.slider("value", vol);
+      videoEl.volume = vol / 100;
+      $volEl.html(vol);
+      _applyVolumeStyle(vol);
     }
   });
 
   // when clicked on id=vol_up, increase slider value by 1 and set volume to that value
   $("#vol_up").click(function () {
-    var vol = $("#vol").html();
+    var vol = parseInt($volEl.html());
     if (vol < 100) {
       vol++;
-      $("#slider").slider("value", vol);
-      document.getElementById("video").volume = vol / 100;
-      $("#vol").html(vol);
+      $sliderEl.slider("value", vol);
+      videoEl.volume = vol / 100;
+      $volEl.html(vol);
     }
-
-    //make slider color #7e0000 if vol is 0 otherwise make it white
-    if (vol == 0) {
-      $("#slider").css("background-color", "#7e0000");
-      $("#mute").html("volume_off");
-      $("#mute").css("color", "#7e0000");
-      document.getElementById("video").muted = true;
-      $("#vol").css("color", "#7e0000");
-    }
-    if (vol > 0) {
-      $("#slider").css("background-color", "white");
-      $("#mute").html("volume_up");
-      $("#mute").css("color", "#155d62");
-      document.getElementById("video").muted = false;
-      $("#vol").css("color", "#033e30");
-    }
+    _applyVolumeStyle(vol);
   });
 
   // volume before mute, used to restore on unmute
@@ -284,29 +267,21 @@ function volume_changer() {
   var mutedByButton = false;
 
   // when clicked on id=mute, mute the video and change icon to volume_off
-  $("#mute").click(function () {
-    var vol = parseInt($("#vol").html());
+  $muteEl.click(function () {
+    var vol = parseInt($volEl.html());
     if (vol > 0) {
       preMuteVolume = vol;
       mutedByButton = true;
-      $("#slider").slider("value", 0);
-      document.getElementById("video").volume = 0;
-      $("#vol").html(0);
-      $("#slider").css("background-color", "#7e0000");
-      $("#mute").html("volume_off");
-      $("#mute").css("color", "#7e0000");
-      document.getElementById("video").muted = true;
-      $("#vol").css("color", "#7e0000");
+      $sliderEl.slider("value", 0);
+      videoEl.volume = 0;
+      $volEl.html(0);
+      _applyVolumeStyle(0);
     } else if (mutedByButton) {
       mutedByButton = false;
-      $("#slider").slider("value", preMuteVolume);
-      document.getElementById("video").volume = preMuteVolume / 100;
-      $("#vol").html(preMuteVolume);
-      $("#slider").css("background-color", "white");
-      $("#mute").html("volume_up");
-      $("#mute").css("color", "#155d62");
-      document.getElementById("video").muted = false;
-      $("#vol").css("color", "#033e30");
+      $sliderEl.slider("value", preMuteVolume);
+      videoEl.volume = preMuteVolume / 100;
+      $volEl.html(preMuteVolume);
+      _applyVolumeStyle(preMuteVolume);
     } else {
       jquery_modal({
         message:

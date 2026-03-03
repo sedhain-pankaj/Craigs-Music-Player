@@ -31,16 +31,11 @@ const load_youtube = () => {
     method: "GET",
     dataType: "json",
     success: (data) => {
-      $("#div_img_video_loader").html(
-        `<h3>
-          Top 10 YouTube Results for : ' ${search_query} '
-        </h3><br>
-        <div id='search_results'></div>`,
-      );
-
+      // Build all results as a single string, then insert once
+      var resultsHtml = '';
       data.items.forEach((item, i) => {
-        const search_result = `
-          <table class='search_result_table'> 
+        resultsHtml += `
+          <table class='search_result_table'>
             <th id='index'>${i + 1}.</th>
             <th class='search_result_img'>
               <img src='${item.snippet.thumbnails.default.url}'>
@@ -50,9 +45,14 @@ const load_youtube = () => {
               item.id.videoId
             }</td>
           </table>`;
-
-        $("#search_results").append(search_result);
       });
+
+      $("#div_img_video_loader").html(
+        `<h3>
+          Top 10 YouTube Results for : ' ${search_query} '
+        </h3><br>
+        <div id='search_results'>${resultsHtml}</div>`,
+      );
 
       loadYoutubeIframeAPI();
 

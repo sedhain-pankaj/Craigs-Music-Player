@@ -15,43 +15,35 @@ include 'logic.php';
     <meta name="owner" content="craigw@craigwilliams.com.au">
     <meta name="og:country-name" content="Aussie">
 
-    <!-- libaries and jQuery UI css-->
+    <!-- All CSS first to avoid render-blocking -->
     <link rel="stylesheet" type="text/css" href="/CSS/sidenav.css">
     <link rel="stylesheet" type="text/css" href="/CSS/keyboard.css">
     <link rel="stylesheet" type="text/css" href="/jquery-framework/jquery-ui.css">
-
-    <!-- jQuery -->
-    <script src="/jquery-framework/external/jquery/jquery.js" type="text/javascript"></script>
-    <script src="/jquery-framework/jquery-ui.js" type="text/javascript"></script>
-
-    <!-- local css -->
     <link rel="stylesheet" type="text/css" href="/CSS/style.css">
     <link rel="stylesheet" type="text/css" href="CSS/left-block.css">
     <link rel="stylesheet" type="text/css" href="CSS/top-middle-block.css">
     <link rel="stylesheet" type="text/css" href="CSS/bottom-middle-block.css">
     <link rel="stylesheet" type="text/css" href="CSS/right-block-search.css">
     <link rel="stylesheet" type="text/css" href="CSS/right-block-scroll.css">
-
-    <!-- local js -->
-    <script src="/index.js" type="text/javascript"></script>
-    <script src="/JS/youtube.js" type="text/javascript"></script>
-    <script src="/JS/queue.js" type="text/javascript"></script>
-    <script src="/JS/songs.js" type="text/javascript"></script>
-    <script src="/JS/shuffle.js" type="text/javascript"></script>
-    <script src="/JS/delete.js" type="text/javascript"></script>
-    <script src="/JS/search.js" type="text/javascript"></script>
-    <script src="/JS/keyboard.js" type="text/javascript"></script>
-    <script src="/JS/skip.js" type="text/javascript"></script>
-    <script src="/JS/scrollbar.js" type="text/javascript"></script>
-    <script src="/JS/modal.js" type="text/javascript"></script>
-    <script src="/JS/config.js" type="text/javascript"></script>
-
-    <!-- Google Material UI -->
     <link href="/CSS/materialUI-icons.css" rel="stylesheet">
-
-    <!-- mediaelement JS -->
-    <script src="/JS/mejs.js" type="text/javascript"></script>
     <link rel="stylesheet" href="/CSS/mejs.css">
+
+    <!-- All JS deferred to not block rendering -->
+    <script src="/jquery-framework/external/jquery/jquery.js" defer></script>
+    <script src="/jquery-framework/jquery-ui.js" defer></script>
+    <script src="/JS/config.js" defer></script>
+    <script src="/JS/mejs.js" defer></script>
+    <script src="/JS/modal.js" defer></script>
+    <script src="/JS/songs.js" defer></script>
+    <script src="/JS/queue.js" defer></script>
+    <script src="/JS/youtube.js" defer></script>
+    <script src="/JS/shuffle.js" defer></script>
+    <script src="/JS/delete.js" defer></script>
+    <script src="/JS/search.js" defer></script>
+    <script src="/JS/keyboard.js" defer></script>
+    <script src="/JS/skip.js" defer></script>
+    <script src="/JS/scrollbar.js" defer></script>
+    <script src="/index.js" defer></script>
 
 </head>
 
@@ -165,7 +157,7 @@ include 'logic.php';
         </div>
 
         <div id="video_container">
-            <video id="video" src="" autoplay preload="auto"></video>
+            <video id="video" src="" autoplay preload="metadata"></video>
         </div>
     </div>
 

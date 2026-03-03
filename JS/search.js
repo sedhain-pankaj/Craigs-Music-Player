@@ -34,6 +34,7 @@ function performSearch(searchId, excludeKey, searchMsg, searchKey = null) {
     return; // Exit function early
   }
 
+  var searchLower = searchValue.toLowerCase();
   var filteredResults = [];
 
   //search on the cache for the searchValue except for the excludeKey category
@@ -41,27 +42,34 @@ function performSearch(searchId, excludeKey, searchMsg, searchKey = null) {
     if (searchKey && key !== searchKey) continue;
     if (!searchKey && key === excludeKey) continue;
 
-    var parser = new DOMParser();
-    var doc = parser.parseFromString(cache[key].response, "text/html");
+    // Use regex to extract each <table>...</table> as a string instead of DOM parsing
+    var tables = cache[key].response.match(/<table[^>]*>[\s\S]*?<\/table>/gi);
+    if (!tables) continue;
 
-    // Iterate over each table element and get the last td element
-    doc.querySelectorAll("table").forEach(function (row) {
-      // Get the text content of the last td element
-      var lastCellText = row.querySelector("td:last-child").textContent;
+    for (var t = 0; t < tables.length; t++) {
+      var tableHtml = tables[t];
+      // Extract the last <td> content using regex instead of DOM query
+      var tdMatches = tableHtml.match(/<td[^>]*>([\s\S]*?)<\/td>/gi);
+      if (!tdMatches || tdMatches.length === 0) continue;
 
-      // Compare the last cell's text content in lowercase with the search value
-      if (lastCellText.toLowerCase().includes(searchValue.toLowerCase())) {
-        var regex = new RegExp(searchValue, "gi");
-        var highlightedText = lastCellText.replace(
+      var lastTd = tdMatches[tdMatches.length - 1];
+      // Strip tags to get text content
+      var textContent = lastTd.replace(/<[^>]+>/g, '');
+
+      if (textContent.toLowerCase().includes(searchLower)) {
+        var regex = new RegExp("(" + searchValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ")", "gi");
+        var highlightedText = textContent.replace(
           regex,
-          (match) => `<span style="background-color: #ffff99;">${match}</span>`,
+          '<span style="background-color: #ffff99;">$1</span>',
         );
-        row.querySelector("td:last-child").innerHTML = highlightedText;
-        filteredResults.push({
-          response: row.outerHTML,
-        });
+        // Replace the last td content in the table HTML
+        var lastTdIndex = tableHtml.lastIndexOf(lastTd);
+        var updatedTable = tableHtml.substring(0, lastTdIndex)
+          + '<td>' + highlightedText + '</td>'
+          + tableHtml.substring(lastTdIndex + lastTd.length);
+        filteredResults.push(updatedTable);
       }
-    });
+    }
   }
 
   // Guard clause for no results
@@ -76,15 +84,13 @@ function performSearch(searchId, excludeKey, searchMsg, searchKey = null) {
     return; // Exit function early
   }
 
-  // Display the filtered results
+  // Build all results as a single string, then insert once
+  var resultsHtml = filteredResults.join('');
+
   $("#div_img_video_loader").html(
     `<h3> ${searchMsg} Results for : ' ${searchValue} '</h3><br>` +
-      `<div id='${searchId}_results'></div>`,
+      `<div id='${searchId}_results'>${resultsHtml}</div>`,
   );
-
-  filteredResults.forEach(function (result) {
-    $(`#${searchId}_results`).append(result.response);
-  });
 
   // replace the original index with the new <table> index
   $("#div_img_video_loader table").each(function (index) {

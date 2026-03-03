@@ -38,6 +38,9 @@ const Keyboard = {
     this.elements.keys =
       this.elements.keysContainer.querySelectorAll(".keyboard__key");
 
+    // Cache the space key element for the timer updates
+    this.elements.spaceKey = this.elements.keysContainer.querySelector(".keyboard__key--extra-wide");
+
     // Add to DOM
     this.elements.main.appendChild(this.elements.keysContainer);
     document.body.appendChild(this.elements.main);
@@ -286,8 +289,7 @@ const Keyboard = {
     this.interval = setInterval(() => {
       if (!this.pause) {
         this.properties.timeRemaining--;
-        const spaceKey = document.querySelector(".keyboard__key--extra-wide");
-        spaceKey.innerHTML =
+        this.elements.spaceKey.innerHTML =
           "Space" +
           "&nbsp" +
           "<i class='material-icons'>space_bar</i>" +
@@ -319,8 +321,7 @@ const Keyboard = {
     this.properties.timeRemaining = timeBeforeClose;
 
     //change the space key back to original timer
-    const spaceKey = document.querySelector(".keyboard__key--extra-wide");
-    spaceKey.innerHTML =
+    this.elements.spaceKey.innerHTML =
       "Space" +
       "&nbsp" +
       "<i class='material-icons'>space_bar</i>" +
@@ -335,13 +336,13 @@ $(document).ready(function () {
   Keyboard.init();
 
   //close keyboard when clicked outside of it (except the input)
-  document.addEventListener("click", function (e) {
-    const keyboard = document.querySelector(".keyboard");
-    const search_all = document.querySelector("#search_all");
-    const search_karaoke = document.querySelector("#search_karaoke");
-    const search_query = document.querySelector("#search_query");
-    const clear_queue_input_div = document.querySelector("#dialog-confirm");
+  var keyboard = document.querySelector(".keyboard");
+  var search_all = document.querySelector("#search_all");
+  var search_karaoke = document.querySelector("#search_karaoke");
+  var search_query = document.querySelector("#search_query");
+  var clear_queue_input_div = document.querySelector("#dialog-confirm");
 
+  document.addEventListener("click", function (e) {
     //if the clicked element is not the keyboard or the search bar, close the keyboard
     if (
       !keyboard.classList.contains("keyboard--hidden") &&

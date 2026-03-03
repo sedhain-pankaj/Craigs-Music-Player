@@ -26,22 +26,22 @@ function queue_array_create(filename, img, dir) {
 
   //if it passes the guard clauses, add dir to queue_array and append to right-block-down
   queue_array.push(dir);
-  $("#right-block-down").append(
-    "<div class='queue_div'>" +
-      "<div class='queue_top'>" +
-        "<img src='" + img + "'>" +
-        "<div class='queue_buttons'>" +
-          "<button class='queue_remove_button' onclick='queue_array_remove(this, \"" + dir + "\")'>Remove <i class='material-icons' id='backspace'>backspace</i></button>" +
-          "<button class='queue_movetop_button' onclick='queue_move_to_top(this, \"" + dir + "\")'>Move to Top <i class='material-icons' id='move_to_top'>vertical_align_top</i></button>" +
-        "</div>" +
+  var queueNumber = queue_array.length;
+  var queueDiv = document.createElement("div");
+  queueDiv.className = "queue_div";
+  queueDiv.innerHTML =
+    "<div class='queue_top'>" +
+      "<img src='" + img + "'>" +
+      "<div class='queue_buttons'>" +
+        "<button class='queue_remove_button' onclick='queue_array_remove(this, \"" + dir + "\")'>Remove <i class='material-icons' id='backspace'>backspace</i></button>" +
+        "<button class='queue_movetop_button' onclick='queue_move_to_top(this, \"" + dir + "\")'>Move to Top <i class='material-icons' id='move_to_top'>vertical_align_top</i></button>" +
       "</div>" +
-      "<div class='queue_bottom'>" +
-        "<span class='queue_number'></span>" +
-        "<span class='queue_name'>" + filename + "</span>" +
-      "</div>" +
-    "</div>",
-  );
-  renumber_Queue();
+    "</div>" +
+    "<div class='queue_bottom'>" +
+      "<span class='queue_number'>" + queueNumber + ".</span>" +
+      "<span class='queue_name'>" + filename + "</span>" +
+    "</div>";
+  document.getElementById("right-block-down").appendChild(queueDiv);
 
   //scroll to bottom of queue when a song is added
   $("#right-block-down").animate(
